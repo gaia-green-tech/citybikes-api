@@ -1,4 +1,4 @@
-from pymongo import Connection
+from pymongo import MongoClient
 import json
 
 from api import app
@@ -9,10 +9,14 @@ from models import Nearby as Nearby_Model
 import models
 import config
 
-connection = Connection(app.config['MONGO_HOST'], app.config['MONGO_PORT'])
-db = getattr(connection, app.config['MONGO_DB'])
-Network = Network_Model(db, connection)
-Nearby = Nearby_Model(db, connection)
+auth = ''
+if app.config['MONGO_USER'] is not None:
+    auth = '%s:%s@' % (app.config['MONGO_USER'], app.config['MONGO_PASSWORD'])
+client = MongoClient('mongodb://%s%s:%i' %
+                         (auth, app.config['MONGO_HOST'], app.config['MONGO_PORT']))
+db = client[app.config['MONGO_DB']]
+Network = Network_Model(db, None)
+Nearby = Nearby_Model(db, None)
 redirects = app.config['REDIRECT']
 
 def handle_redirect_or_notfound(network_id):

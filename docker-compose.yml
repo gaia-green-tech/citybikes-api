@@ -6,7 +6,6 @@ services:
     networks:
       - citybikes
     environment:
-      - MONGODB_HOST=mongodb
       - DEBUG=True
       - FLASK_ENV=development
     env_file: .env
